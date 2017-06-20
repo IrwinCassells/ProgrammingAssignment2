@@ -6,29 +6,29 @@
 
 makeCacheMatrix <- function(x = matrix()) 
 {
-    inverseX = NULL
+    inverseX <- NULL
     
-    setMatrix = function(mat1)
+    set <- function(mat1)                   # sets the matrix 
         {
-            x = mat1
+            x <<- mat1
+            inverseX <<- NULL
         }
     
-    getMatrix = function()
+    get <- function()                       # retrievs the matrix
         {
             x
         }
     
-    setInverse = function(mat2)
+    setInv <- function(solve)
         {
-            inverseX = solve(mat2)
+            inverseX <<- solve              # sets the inverse of the matrix
         }
-    
-    getInverse = function()
+    getInv <- function()                    # retrieves the inverse matrix
         {
             inverseX
         }
     
-    list(set = setMatrix, get = getMatrix, setInv = setInverse, getInv = getInverse)
+    list(set = set, get = get, setInv = setInv, getInv = getInv)    # special vector
 }
 
 
@@ -36,16 +36,17 @@ makeCacheMatrix <- function(x = matrix())
 
 cacheSolve <- function(x, ...) 
 {
-    tInverse = x$getInverse()
+    inverseX <- x$getInv()                   # gets the inverse matrix
+    tMatrix <- x$get()                       # gets the actual matrix
     
-    if (!is.null(tInverse) & identical(x&getMatrix(),solve(tInverse)))
+    if (!is.null(inverseX) & identical(tMatrix,x))    # checks if it is null and if the matrices are the same
     {
         message("Getting cached data")
-        return(tInverse)
+        return(inverseX)                              # returns the cache matrix
     }
-    else
-    {
-        x$setInverse(x&getMatrix())
-        x&getInverse()
-    }
+        data <- x$get()                               # else sets the new value of the matrix
+        inverseX <- solve(data,...)
+        x&setInv(inverseX)
+        inverseX
 }
+
